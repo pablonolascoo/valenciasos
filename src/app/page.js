@@ -67,6 +67,14 @@ export default function Home() {
 
   const handleAsistencia = async (id) => {
     if (clickedAssistance[id]) return;
+  
+    // Mostrar confirmación antes de continuar
+    const confirmed = window.confirm(
+      "¿Estás seguro de que deseas incrementar el contador de Asistencia en 1 para esta Ayuda?"
+    );
+  
+    if (!confirmed) return;
+  
     try {
       await axios.put("/api/ayudas", { id });
       setClickedAssistance((prev) => ({ ...prev, [id]: true }));
