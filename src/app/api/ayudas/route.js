@@ -6,12 +6,18 @@ export async function GET(req) {
   await dbConnect();
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "10", 10);
+  const skip = (page - 1) * limit;
 
   try {
     let ayudas;
 
     if (type === "recientes") {
-      ayudas = await Ayuda.find().sort({ timestamps: -1 }).limit(10);
+      ayudas = await Ayuda.find()
+        .sort({ timestamps: -1 })
+        .skip(skip)
+        .limit(limit);
     } else if (type === "populares") {
       const allAyudas = await Ayuda.find();
       ayudas = allAyudas
@@ -23,12 +29,12 @@ export async function GET(req) {
           return { ...ayuda._doc, porcentajeAsistencia };
         })
         .sort((a, b) => a.porcentajeAsistencia - b.porcentajeAsistencia)
-        .slice(0, 10);
+        .slice(skip, skip + limit);
     }
+
     return new Response(JSON.stringify({ success: true, data: ayudas }), {
       status: 200,
     });
-
   } catch (error) {
     return new Response(
       JSON.stringify({ success: false, error: error.message }),
@@ -44,7 +50,7 @@ export async function POST(req) {
   try {
     const nuevaAyuda = await Ayuda.create(body);
     console.log(nuevaAyuda)
-    
+
     return new Response(JSON.stringify({ success: true, data: nuevaAyuda }), {
       status: 201,
     });

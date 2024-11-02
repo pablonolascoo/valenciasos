@@ -18,30 +18,52 @@ export default function Home() {
   });
   const [duplicados, setDuplicados] = useState([]);
   const [clickedAssistance, setClickedAssistance] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageRecientes, setCurrentPageRecientes] = useState(1);
+  const [currentPagePopulares, setCurrentPagePopulares] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState(null);
-  const itemsPerPage = 10;
+  const [itemsPerPage] = useState(10);
   const DISABLED_TIME = 240000;
   const [isDuplicate, setIsDuplicate] = useState(false);
 
   // Función de obtención de datos
-  const fetchData = async () => {
+  const fetchData = async (type, page) => {
     try {
-      const recientesRes = await axios.get("/api/ayudas?type=recientes");
-      const popularesRes = await axios.get("/api/ayudas?type=populares");
-      setRecientes(recientesRes.data.data);
-      setPopulares(popularesRes.data.data);
+      const response = await axios.get(`/api/ayudas?type=${type}&page=${page}&limit=${itemsPerPage}`);
+      return response.data.data;
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error(`Error fetching ${type} data:`, error);
+      return [];
     }
   };
+
+  const loadRecientes = async () => {
+    const data = await fetchData("recientes", currentPageRecientes);
+    setRecientes(data);
+  };
+
+  const loadPopulares = async () => {
+    const data = await fetchData("populares", currentPagePopulares);
+    setPopulares(data);
+  };
+
+  useEffect(() => {
+    loadRecientes();
+    loadPopulares();
+  }, [currentPageRecientes, currentPagePopulares]);
 
   useEffect(() => {
     fetchData();
     const intervalId = setInterval(fetchData, 20000);
     return () => clearInterval(intervalId);
   }, []);
+
+  const handleNextPageRecientes = () => setCurrentPageRecientes((prev) => prev + 1);
+  const handlePreviousPageRecientes = () => setCurrentPageRecientes((prev) => Math.max(prev - 1, 1));
+
+  const handleNextPagePopulares = () => setCurrentPagePopulares((prev) => prev + 1);
+  const handlePreviousPagePopulares = () => setCurrentPagePopulares((prev) => Math.max(prev - 1, 1));
+
 
   const handleAsistencia = async (id) => {
     if (clickedAssistance[id]) return;
@@ -166,32 +188,23 @@ export default function Home() {
     }
   };
 
-  const paginatedItems = recientes.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   return (
     <Container>
       <StickySection>
         <SectionHeader>
           <Title>Solicitudes más recientes</Title>
           <PaginationControls>
-            <PaginationButton
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            >
+            <PaginationButton onClick={handlePreviousPageRecientes}>
               Anterior
             </PaginationButton>
-            <PaginationButton
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-            >
+            <PaginationButton onClick={handleNextPageRecientes}>
               Siguiente
             </PaginationButton>
           </PaginationControls>
           <Button onClick={() => setIsModalOpen(true)}>Solicitar Ayuda</Button>
         </SectionHeader>
         <Grid>
-          {paginatedItems.map((ayuda) => (
+          {recientes.map((ayuda) => (
             <AyudaCard key={ayuda._id}>
               <HelpTitle>{ayuda.nombre}</HelpTitle>
               <HelpLocation>{ayuda.localidad}</HelpLocation>
@@ -227,14 +240,10 @@ export default function Home() {
         <SectionHeader>
           <Title>Más solicitado</Title>
           <PaginationControls>
-            <PaginationButton
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            >
+            <PaginationButton onClick={handlePreviousPagePopulares}>
               Anterior
             </PaginationButton>
-            <PaginationButton
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-            >
+            <PaginationButton onClick={handleNextPagePopulares}>
               Siguiente
             </PaginationButton>
           </PaginationControls>
