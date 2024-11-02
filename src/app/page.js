@@ -192,7 +192,7 @@ export default function Home() {
     <Container>
       <StickySection>
         <SectionHeader>
-          <Title>Solicitudes más recientes</Title>
+          <Title>Más recientes</Title>
           <PaginationControls>
             <PaginationButton onClick={handlePreviousPageRecientes}>
               Anterior
