@@ -143,6 +143,8 @@ export default function Home() {
         totalSolicitudes: 1,
       };
 
+      delete helpData._id;
+
       await axios.post("/api/ayudas", helpData);
       fetchData();
       setMessage("Solicitud enviada con éxito.");
