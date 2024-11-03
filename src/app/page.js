@@ -148,7 +148,7 @@ export default function Home() {
       }, 1000);
     } catch (error) {
       console.error("Error submitting new help:", error);
-      setMessage("Error al enviar la solicitud.");
+      setMessage(error.message);
     }
   };
   
