@@ -24,7 +24,7 @@ const bannedWords = [
   "masturbation", "cum", "orgasm", "ejaculation", "vagina", "penis", "scrotum", "testicles", "balls", "rectum",
   "suck", "blowjob", "hump", "dildo", "wanker", "jizz", "boner", "buttfuck", "fucker", "motherfucker", "douchebag",
   "asshat", "bitchass", "titties", "faggot", "sodomy", "humping", "gag", "kinky", "necrophile", "voyeur", "creampie",
-  "choke", "gore", "cruelty", "rough", "bully", "bullying", "intimidate", "intimidation", "gory", "dead", "disgusting",
+  "choke", "gore", "cruelty", "rough", "bully", "bullying", "intimidate", "intimidation", "gory", "dead", "disgusting", "wtf",
   
   // Variantes y combinaciones comunes (censuradas, números, caracteres)
   "v!olaci0n", "v1olacion", "v10l4dor", "viol4cion", "s3xo", "p0rn", "p@rn", "pr0st1tut@", "v1olen", "golpe4", 
