@@ -136,7 +136,11 @@ export async function POST(req) {
       status: 201,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ success: false }), { status: 400 });
+    return new Response(JSON.stringify({
+      success: false,
+      error: "El contenido contiene palabras prohibidas.",
+    }),
+    { status: 400, headers: { "Content-Type": "application/json" } });
   }
 }
 

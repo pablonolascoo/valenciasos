@@ -29,7 +29,9 @@ export default function Home() {
   // Función de obtención de datos
   const fetchData = async (type, page) => {
     try {
-      const response = await axios.get(`/api/ayudas?type=${type}&page=${page}&limit=${itemsPerPage}`);
+      const response = await axios.get(
+        `/api/ayudas?type=${type}&page=${page}&limit=${itemsPerPage}`
+      );
       return response.data.data;
     } catch (error) {
       console.error(`Error fetching ${type} data:`, error);
@@ -58,23 +60,26 @@ export default function Home() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleNextPageRecientes = () => setCurrentPageRecientes((prev) => prev + 1);
-  const handlePreviousPageRecientes = () => setCurrentPageRecientes((prev) => Math.max(prev - 1, 1));
+  const handleNextPageRecientes = () =>
+    setCurrentPageRecientes((prev) => prev + 1);
+  const handlePreviousPageRecientes = () =>
+    setCurrentPageRecientes((prev) => Math.max(prev - 1, 1));
 
-  const handleNextPagePopulares = () => setCurrentPagePopulares((prev) => prev + 1);
-  const handlePreviousPagePopulares = () => setCurrentPagePopulares((prev) => Math.max(prev - 1, 1));
-
+  const handleNextPagePopulares = () =>
+    setCurrentPagePopulares((prev) => prev + 1);
+  const handlePreviousPagePopulares = () =>
+    setCurrentPagePopulares((prev) => Math.max(prev - 1, 1));
 
   const handleAsistencia = async (id) => {
     if (clickedAssistance[id]) return;
-  
+
     // Mostrar confirmación antes de continuar
     const confirmed = window.confirm(
       "¿Estás seguro de que deseas incrementar el contador de Asistencia en 1 para esta Ayuda?"
     );
-  
+
     if (!confirmed) return;
-  
+
     try {
       await axios.put("/api/ayudas", { id });
       setClickedAssistance((prev) => ({ ...prev, [id]: true }));
@@ -128,12 +133,12 @@ export default function Home() {
         ...newHelp,
         totalSolicitudes: 1,
       };
-  
+
       await axios.post("/api/ayudas", helpData);
       setMessage("Solicitud enviada con éxito.");
       fetchData();
       setIsDuplicate(false);
-  
+
       // Restablecer el estado de `newHelp` y cerrar el modal
       setTimeout(() => {
         setNewHelp({
@@ -148,17 +153,23 @@ export default function Home() {
       }, 1000);
     } catch (error) {
       console.error("Error submitting new help:", error);
-      setMessage(error.message);
+
+      // Verifica que 'error.response' y 'error.response.data.error' existan
+      if (error.response && error.response.data && error.response.data.error) {
+        setMessage(error.response.data.error); // Mostrar el mensaje específico del backend
+      } else {
+        setMessage("Error al enviar la solicitud."); // Mensaje genérico
+      }
     }
   };
-  
+
   const handleSolicitudes = async (help) => {
     console.log("ID enviado para incrementar solicitud:", help._id);
     try {
       await axios.patch("/api/ayudas", { id: help._id });
       setMessage("Solicitud incrementada con éxito.");
       fetchData();
-  
+
       // Restablecer el estado y cerrar el modal
       setTimeout(() => {
         setNewHelp({
