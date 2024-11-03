@@ -368,24 +368,45 @@ export default function Home() {
                 <span>Solicitudes: {ayuda.totalSolicitudes}</span>
                 <span>Asistencias: {ayuda.totalAsistencias}</span>
               </Stats>
-              <ActionButton
-                onClick={() => handleAsistencia(ayuda._id)}
-                active={!clickedAssistance[ayuda._id]}
-              >
-                <Image
-                  src={
-                    clickedAssistance[ayuda._id]
-                      ? "/comenta-alt-check.svg"
-                      : "/viaje-en-coche.svg"
-                  }
-                  alt="Icon"
-                  width={24}
-                  height={24}
-                />
-                <ButtonText>
-                  {clickedAssistance[ayuda._id] ? "Recibido" : "Voy en camino"}
-                </ButtonText>
-              </ActionButton>
+              <ButtonWrapper>
+                <ActionButton
+                  onClick={() => handleNecesidad(ayuda)}
+                  active={!clickedNecessity[ayuda._id]}
+                  style={{ backgroundColor: clickedNecessity[ayuda._id] ? "#f8b2b2" : "#ed8c85" }}
+                >
+                  <Image
+                    src={
+                      clickedNecessity[ayuda._id]
+                        ? "/comenta-alt-check.svg"
+                        : "/chaleco-voluntario.svg"
+                    }
+                    alt="Icon"
+                    width={24}
+                    height={24}
+                  />
+                  <ButtonText>
+                    {clickedNecessity[ayuda._id] ? "Necesidad Recibida" : "Lo Necesito"}
+                  </ButtonText>
+                </ActionButton>
+                <ActionButton
+                  onClick={() => handleAsistencia(ayuda._id)}
+                  active={!clickedAssistance[ayuda._id]}
+                >
+                  <Image
+                    src={
+                      clickedAssistance[ayuda._id]
+                        ? "/comenta-alt-check.svg"
+                        : "/viaje-en-coche.svg"
+                    }
+                    alt="Icon"
+                    width={24}
+                    height={24}
+                  />
+                  <ButtonText>
+                    {clickedAssistance[ayuda._id] ? "Asistencia Recibida" : "Voy en camino"}
+                  </ButtonText>
+                </ActionButton>
+              </ButtonWrapper>
             </AyudaCard>
           ))}
         </Grid>
