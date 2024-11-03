@@ -315,8 +315,8 @@ export default function Home() {
                 value={newHelp.nombre || ""}
                 onChange={handleInputChange}
               />
-              <CharacterCount isExceeded={newHelp.nombre.length > 50}>
-                {newHelp.nombre.length}/50
+              <CharacterCount isExceeded={newHelp.nombre.length > 30}>
+                {newHelp.nombre.length}/30
               </CharacterCount>
             </InputWrapper>
 
