@@ -30,6 +30,8 @@ export default function Home() {
     descripcion: "",
   });
 
+  const [localidades, setLocalidades] = useState([]);
+
   const fetchData = async (type, page) => {
     try {
       const response = await axios.get(
@@ -98,8 +100,19 @@ export default function Home() {
 
   const handleInputChange = async (e) => {
     const { name, value } = e.target;
-    setNewHelp((prev) => ({ ...prev, [name]: value }));
+    setNewHelp((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "localidad" || name === "descripcion" ? { _id: null } : {}),
+    }));
 
+    if (
+      (name === "localidad" && value !== initialValues.localidad) ||
+      (name === "descripcion" && value !== initialValues.descripcion)
+    ) {
+      setIsDuplicate(false);
+    }
+  
     if (name === "nombre" && value) {
       try {
         const response = await axios.get(`/api/ayudas/search?nombre=${value}`);
@@ -109,12 +122,14 @@ export default function Home() {
         console.error("Error fetching duplicates:", error);
       }
     }
-
-    if (
-      (name === "localidad" && value !== initialValues.localidad) ||
-      (name === "descripcion" && value !== initialValues.descripcion)
-    ) {
-      setIsDuplicate(false);
+  
+    if (name === "localidad" && value) {
+      try {
+        const response = await axios.get(`/api/localidades/search?localidad=${value}`);
+        setLocalidades(response.data.data);
+      } catch (error) {
+        console.error("Error fetching localidades:", error);
+      }
     }
   };
 
@@ -175,7 +190,6 @@ export default function Home() {
   };
 
   const handleSolicitudes = async (help) => {
-    console.log("ID enviado para incrementar solicitud:", help._id);
     try {
       await axios.patch("/api/ayudas", { id: help._id });
       setMessage("Solicitud incrementada con éxito.");
@@ -351,13 +365,31 @@ export default function Home() {
               </CharacterCount>
             </InputWrapper>
 
-            <Input
-              type="text"
-              name="localidad"
-              placeholder="Localidad"
-              value={newHelp.localidad || ""}
-              onChange={handleInputChange}
-            />
+            <InputWrapper>
+              <Input
+                type="text"
+                name="localidad"
+                placeholder="Localidad"
+                value={newHelp.localidad || ""}
+                onChange={handleInputChange}
+              />
+              <CharacterCount isExceeded={newHelp.localidad.length > 30}>
+                {newHelp.localidad.length}/30
+              </CharacterCount>
+            </InputWrapper>
+
+            {localidades.length > 0 && (
+              <DuplicateList>
+                {localidades.map((loc) => (
+                  <DuplicateItem
+                    key={loc._id}
+                    onClick={() => setNewHelp((prev) => ({ ...prev, localidad: loc.nombre }))}
+                  >
+                    {loc.nombre}
+                  </DuplicateItem>
+                ))}
+              </DuplicateList>
+            )}
             <p>Coordenadas: {newHelp.coordenadas || "Cargando ubicación..."}</p>
 
             <SubmitButton
