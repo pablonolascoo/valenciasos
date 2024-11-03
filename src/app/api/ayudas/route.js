@@ -11,9 +11,9 @@ const bannedWords = [
   "pedófilo", "pedofilia", "pederasta", "pederastia", "rata", "zorra", "puta", "puto", "cabrona", "cabrón", "caca",
   "mierda", "maldito", "malparido", "coger", "pene", "vagina", "testículo", "escroto", "masturbar", "masturbación", 
   "correrse", "eyaculación", "teta", "tetona", "culo", "verga", "chingar", "chingón", "chingada", "chingar", "puñeta", 
-  "maricón", "marica", "gay", "lesbiana", "homosexual", "sodomía", "cachondo", "pedo", "pedorra", "pedorro", "pajero",
-  "puñetas", "gilipollas", "infeliz", "zorrón", "carajo", "cagada", "cagón", "cagona", "culero", "fornicar", "bastardo",
-  "malnacido", "perra", "pajear", "desnudo", "penetración", "penetrar", "orgasmo", "fetiche", "sadismo", "sadomasoquismo",
+  "maricón", "marica", "sodomía", "cachondo", "pedo", "pedorra", "pedorro", "pajero",
+  "gilipollas", "infeliz", "zorrón", "culero", "fornicar",
+  "malnacido", "pajear", "desnudo", "orgasmo",
   
   // Inglés - contenido explícito y violencia
   "rape", "rapist", "molest", "molestation", "harass", "harassment", "incest", "sex", "sexual", "pornography", "porn",
@@ -28,14 +28,11 @@ const bannedWords = [
   
   // Variantes y combinaciones comunes (censuradas, números, caracteres)
   "v!olaci0n", "v1olacion", "v10l4dor", "viol4cion", "s3xo", "p0rn", "p@rn", "pr0st1tut@", "v1olen", "golpe4", 
-  "s3xual", "p3rv3rso", "n4rc0", "secuestr@", "abus@", "inc3sto", "m4ri", "h0m0", "lezbi", "p0rn0", "c0j3r", 
+  "s3xual", "p3rv3rso", "n4rc0", "secuestr@", "abus@", "inc3sto", "m4ri", "p0rn0", "c0j3r", 
   "ch1ngad@", "paj4", "c@m", "n@ked", "s@d0", "t0rtura", "expl0t@r", "gen0", "kill3r", "h@rass", "d1ckh3ad", "tw@t",
   
   // Regionalismos y modismos ofensivos
-  "pinga", "chucha", "chingona", "pendejada", "hijueputa", "hijoputa", "cabronazo", "estupidez", "mamada", "guey",
-  "guevada", "mamahuevo", "soplapollas", "gilipollas", "baboso", "zangano", "cabronada", "grosería", "pelotudo", 
-  "pendejada", "cojudo", "mamadas", "puchica", "chucha", "carajo", "mamerto", "mijito", "cojones", "coño", "huevón",
-  "güevon", "pelotudo", "boludo", "coger", "tira", "chamaco", "cachonda", "chiflado", "follar", "follador", "folladora",
+  "pinga", "follar", "follador", "folladora",
   
   // Inglés - eufemismos y términos ofensivos o connotaciones sexuales
   "dong", "wang", "hooters", "muff", "wiener", "knob", "poonani", "splooge", "beefcurtains", "clap", "fluffer", 
