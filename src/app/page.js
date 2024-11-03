@@ -58,7 +58,8 @@ export default function Home() {
   }, [currentPageRecientes, currentPagePopulares]);
 
   useEffect(() => {
-    fetchData();
+    loadRecientes();
+    loadPopulares();
     const intervalId = setInterval(fetchData, 20000);
     return () => clearInterval(intervalId);
   }, []);
@@ -85,7 +86,8 @@ export default function Home() {
     try {
       await axios.put("/api/ayudas", { id });
       setClickedAssistance((prev) => ({ ...prev, [id]: true }));
-      fetchData();
+      loadRecientes();
+      loadPopulares();
       setTimeout(() => {
         setClickedAssistance((prev) => ({ ...prev, [id]: false }));
       }, DISABLED_TIME);
@@ -146,7 +148,8 @@ export default function Home() {
       delete helpData._id;
 
       await axios.post("/api/ayudas", helpData);
-      fetchData();
+      loadRecientes();
+      loadPopulares();
       setMessage("Solicitud enviada con éxito.");
       setIsDuplicate(false);
       setTimeout(() => {
@@ -176,8 +179,8 @@ export default function Home() {
     try {
       await axios.patch("/api/ayudas", { id: help._id });
       setMessage("Solicitud incrementada con éxito.");
-      fetchData();
-
+      loadRecientes();
+      loadPopulares();
       setTimeout(() => {
         setNewHelp({
           _id: null,
