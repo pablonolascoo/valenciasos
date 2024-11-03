@@ -20,7 +20,7 @@ const bannedWords = [
   "prostitution", "prostitute", "violence", "beat", "murder", "murderer", "homicide", "kill", "killer", "die", "suicide",
   "suicidal", "corpse", "torture", "genocide", "violent", "narco", "drug trafficking", "drug dealer", "kidnap", 
   "kidnapping", "extort", "extortion", "exploit", "exploitation", "pervert", "pedophile", "pedophilia", "necrophilia",
-  "slut", "whore", "bitch", "bastard", "fucker", "dick", "cock", "ass", "asshole", "boob", "tits", "masturbate",
+  "slut", "whore", "bitch", "bastard", "fuck", "fucker", "dick", "cock", "ass", "asshole", "boob", "tits", "masturbate",
   "masturbation", "cum", "orgasm", "ejaculation", "vagina", "penis", "scrotum", "testicles", "balls", "rectum",
   "suck", "blowjob", "hump", "dildo", "wanker", "jizz", "boner", "buttfuck", "fucker", "motherfucker", "douchebag",
   "asshat", "bitchass", "titties", "faggot", "sodomy", "humping", "gag", "kinky", "necrophile", "voyeur", "creampie",
@@ -50,6 +50,23 @@ const bannedWords = [
   "smother", "strangle", "strangulation", "butcher", "massacre", "bloody", "bloodshed", "slaughter", "lynch", 
   "lynching", "execution", "executed", "behead", "decapitate", "tortured", "assassinate", "assassination", "extortion",
 ];
+
+function containsBannedWords(text) {
+  const lowerText = text.toLowerCase();
+
+  // Construye un patrón de regex que permita coincidencias amplias, ignorando caracteres no alfabéticos y números
+  const regexPattern = bannedWords
+    .map((word) => {
+      // Divide cada palabra en caracteres, permitiendo cualquier número o símbolo entre ellos
+      const chars = word.split("").map((char) => `(${char})`).join("[^a-zA-Z]*");
+      return `\\b${chars}\\b`;
+    })
+    .join("|");
+
+  const regex = new RegExp(regexPattern, "i"); // "i" para ignorar mayúsculas/minúsculas
+
+  return regex.test(lowerText);
+}
 
 export async function GET(req) {
   await dbConnect();
@@ -96,23 +113,6 @@ export async function POST(req) {
   await dbConnect();
   const body = await req.json();
 
-  function containsBannedWords(text) {
-    const lowerText = text.toLowerCase();
-  
-    // Construye un patrón de regex que permita coincidencias amplias, ignorando caracteres no alfabéticos y números
-    const regexPattern = bannedWords
-      .map((word) => {
-        // Divide cada palabra en caracteres, permitiendo cualquier número o símbolo entre ellos
-        const chars = word.split("").map((char) => `(${char})`).join("[^a-zA-Z]*");
-        return `\\b${chars}\\b`;
-      })
-      .join("|");
-  
-    const regex = new RegExp(regexPattern, "i"); // "i" para ignorar mayúsculas/minúsculas
-  
-    return regex.test(lowerText);
-  }
-
   // Verificar palabras prohibidas en título y descripción
   const { nombre, descripcion } = body;
   if (
@@ -139,7 +139,6 @@ export async function POST(req) {
     return new Response(JSON.stringify({ success: false }), { status: 400 });
   }
 }
-
 
 export async function PUT(req) {
   await dbConnect();
