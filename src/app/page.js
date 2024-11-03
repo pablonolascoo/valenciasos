@@ -17,6 +17,7 @@ export default function Home() {
     location: { type: "Point", coordinates: [] },
   });
   const [duplicados, setDuplicados] = useState([]);
+  const [clickedNecessity, setClickedNecessity] = useState({});
   const [clickedAssistance, setClickedAssistance] = useState({});
   const [currentPageRecientes, setCurrentPageRecientes] = useState(1);
   const [currentPagePopulares, setCurrentPagePopulares] = useState(1);
@@ -229,6 +230,53 @@ export default function Home() {
     }
   };
 
+  const handleNecesidad = async (ayuda) => {
+    const clickedNecessity = JSON.parse(localStorage.getItem("clickedNecessity")) || {};
+
+    const id = ayuda._id;
+  
+    if (clickedNecessity[ayuda._id]) return;
+  
+    const confirmed = window.confirm(
+      `¿Estás seguro de que deseas incrementar el contador de Solicitudes en 1 para "${ayuda.nombre}" en "${ayuda.localidad}"?`
+    );
+  
+    if (!confirmed) return;
+  
+    try {
+      await axios.patch("/api/ayudas", { id: ayuda._id });
+      setMessage("Necesidad incrementada con éxito.");
+  
+      loadRecientes();
+      loadPopulares();
+  
+      setClickedNecessity((prev) => {
+        const updatedNecessity = { ...prev, [id]: true };
+        localStorage.setItem("clickedNecessity", JSON.stringify(updatedNecessity));
+        return updatedNecessity;
+      });
+  
+      setTimeout(() => {
+        setClickedNecessity((prev) => {
+          const updatedNecessity = { ...prev, [id]: false };
+          localStorage.setItem("clickedNecessity", JSON.stringify(updatedNecessity));
+          return updatedNecessity;
+        });
+      }, DISABLED_TIME);
+    } catch (error) {
+      console.error("Error incrementando necesidad:", error);
+      setMessage("Error al incrementar la necesidad.");
+    }
+  };
+  
+  // UseEffect para cargar estado de clickedAssistance y clickedNecessity desde localStorage al inicio
+  useEffect(() => {
+    const storedAssistance = JSON.parse(localStorage.getItem("clickedAssistance")) || {};
+    const storedNecessity = JSON.parse(localStorage.getItem("clickedNecessity")) || {};
+    setClickedAssistance(storedAssistance);
+    setClickedNecessity(storedNecessity);
+  }, []);  
+
   return (
     <Container>
       <StickySection>
@@ -254,24 +302,45 @@ export default function Home() {
                 <span>Solicitudes: {ayuda.totalSolicitudes}</span>
                 <span>Asistencias: {ayuda.totalAsistencias}</span>
               </Stats>
-              <ActionButton
-                onClick={() => handleAsistencia(ayuda._id)}
-                active={!clickedAssistance[ayuda._id]}
-              >
-                <Image
-                  src={
-                    clickedAssistance[ayuda._id]
-                      ? "/comenta-alt-check.svg"
-                      : "/viaje-en-coche.svg"
-                  }
-                  alt="Icon"
-                  width={24}
-                  height={24}
-                />
-                <ButtonText>
-                  {clickedAssistance[ayuda._id] ? "Recibido" : "Voy en camino"}
-                </ButtonText>
-              </ActionButton>
+              <ButtonWrapper>
+                <ActionButton
+                  onClick={() => handleNecesidad(ayuda)}
+                  active={!clickedNecessity[ayuda._id]}
+                  style={{ backgroundColor: clickedNecessity[ayuda._id] ? "#f8b2b2" : "#ed8c85" }}
+                >
+                  <Image
+                    src={
+                      clickedNecessity[ayuda._id]
+                        ? "/comenta-alt-check.svg"
+                        : "/chaleco-voluntario.svg"
+                    }
+                    alt="Icon"
+                    width={24}
+                    height={24}
+                  />
+                  <ButtonText>
+                    {clickedNecessity[ayuda._id] ? "Necesidad Recibida" : "Lo Necesito"}
+                  </ButtonText>
+                </ActionButton>
+                <ActionButton
+                  onClick={() => handleAsistencia(ayuda._id)}
+                  active={!clickedAssistance[ayuda._id]}
+                >
+                  <Image
+                    src={
+                      clickedAssistance[ayuda._id]
+                        ? "/comenta-alt-check.svg"
+                        : "/viaje-en-coche.svg"
+                    }
+                    alt="Icon"
+                    width={24}
+                    height={24}
+                  />
+                  <ButtonText>
+                    {clickedAssistance[ayuda._id] ? "Recibido" : "Voy en camino"}
+                  </ButtonText>
+                </ActionButton>
+              </ButtonWrapper>
             </AyudaCard>
           ))}
         </Grid>
@@ -506,6 +575,12 @@ const Message = styled.p`
   color: #28a745;
   margin-top: 10px;
   font-size: 14px;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
 `;
 
 const ActionButton = styled.button`
