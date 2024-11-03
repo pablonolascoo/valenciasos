@@ -51,18 +51,23 @@ const bannedWords = [
 function containsBannedWords(text) {
   const lowerText = text.toLowerCase();
 
-  // Construye un patrón de regex que permita coincidencias amplias, ignorando caracteres no alfabéticos y números
   const regexPattern = bannedWords
     .map((word) => {
-      // Divide cada palabra en caracteres, permitiendo cualquier número o símbolo entre ellos
-      const chars = word.split("").map((char) => `(${char})`).join("[^a-zA-Z]*");
+      const chars = word.split("").map((char) => `(${char})`).join("[^a-zA-Z]{0,1}");
       return `\\b${chars}\\b`;
     })
     .join("|");
 
-  const regex = new RegExp(regexPattern, "i"); // "i" para ignorar mayúsculas/minúsculas
+  const regex = new RegExp(regexPattern, "i");
 
-  return regex.test(lowerText);
+  const match = lowerText.match(regex);
+  
+  if (match) {
+    console.log(`Palabra ofensiva detectada: "${match[0]}"`); // Log de la palabra exacta detectada
+    return true;
+  }
+
+  return false;
 }
 
 export async function GET(req) {
@@ -121,23 +126,41 @@ export async function POST(req) {
         success: false,
         error: "El contenido contiene palabras prohibidas.",
       }),
-      { status: 400 }
+      { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
   try {
     const nuevaAyuda = await Ayuda.create(body);
-    console.log(nuevaAyuda);
+    console.log("Nueva ayuda creada:", nuevaAyuda);
 
     return new Response(JSON.stringify({ success: true, data: nuevaAyuda }), {
       status: 201,
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    return new Response(JSON.stringify({
-      success: false,
-      error: "El contenido contiene palabras prohibidas.",
-    }),
-    { status: 400, headers: { "Content-Type": "application/json" } });
+    console.error("Error al crear ayuda:", error);
+
+    // Verificación específica para errores de validación de Mongoose
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((err) => err.message);
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Error de validación: " + messages.join(", "),
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Otros errores
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error.message || "Error al procesar la solicitud",
+      }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
   }
 }
 

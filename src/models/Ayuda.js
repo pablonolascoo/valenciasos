@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const AyudaSchema = new mongoose.Schema({
-  nombre: { type: String, required: true, maxlength: 20 },
+  nombre: { type: String, required: true, maxlength: 30 },
   descripcion: { type: String, maxlength: 100 },
   totalSolicitudes: { type: Number, default: 0 },
   totalAsistencias: { type: Number, default: 0 },

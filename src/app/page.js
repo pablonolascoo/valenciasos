@@ -14,7 +14,7 @@ export default function Home() {
     nombre: "",
     descripcion: "",
     localidad: "",
-    location: { type: "Point", coordinates: [] }, // Inicializamos location como Point con coordenadas vacías
+    location: { type: "Point", coordinates: [] },
   });
   const [duplicados, setDuplicados] = useState([]);
   const [clickedAssistance, setClickedAssistance] = useState({});
@@ -25,8 +25,11 @@ export default function Home() {
   const [itemsPerPage] = useState(10);
   const DISABLED_TIME = 240000;
   const [isDuplicate, setIsDuplicate] = useState(false);
+  const [initialValues, setInitialValues] = useState({
+    localidad: "",
+    descripcion: "",
+  });
 
-  // Función de obtención de datos
   const fetchData = async (type, page) => {
     try {
       const response = await axios.get(
@@ -73,7 +76,6 @@ export default function Home() {
   const handleAsistencia = async (id) => {
     if (clickedAssistance[id]) return;
 
-    // Mostrar confirmación antes de continuar
     const confirmed = window.confirm(
       "¿Estás seguro de que deseas incrementar el contador de Asistencia en 1 para esta Ayuda?"
     );
@@ -105,6 +107,13 @@ export default function Home() {
         console.error("Error fetching duplicates:", error);
       }
     }
+
+    if (
+      (name === "localidad" && value !== initialValues.localidad) ||
+      (name === "descripcion" && value !== initialValues.descripcion)
+    ) {
+      setIsDuplicate(false);
+    }
   };
 
   const fetchUserLocation = async () => {
@@ -135,11 +144,9 @@ export default function Home() {
       };
 
       await axios.post("/api/ayudas", helpData);
-      setMessage("Solicitud enviada con éxito.");
       fetchData();
+      setMessage("Solicitud enviada con éxito.");
       setIsDuplicate(false);
-
-      // Restablecer el estado de `newHelp` y cerrar el modal
       setTimeout(() => {
         setNewHelp({
           _id: null,
@@ -154,11 +161,10 @@ export default function Home() {
     } catch (error) {
       console.error("Error submitting new help:", error);
 
-      // Verifica que 'error.response' y 'error.response.data.error' existan
       if (error.response && error.response.data && error.response.data.error) {
-        setMessage(error.response.data.error); // Mostrar el mensaje específico del backend
+        setMessage(error.response.data.error);
       } else {
-        setMessage("Error al enviar la solicitud."); // Mensaje genérico
+        setMessage("Error al enviar la solicitud.");
       }
     }
   };
@@ -170,7 +176,6 @@ export default function Home() {
       setMessage("Solicitud incrementada con éxito.");
       fetchData();
 
-      // Restablecer el estado y cerrar el modal
       setTimeout(() => {
         setNewHelp({
           _id: null,
@@ -189,16 +194,14 @@ export default function Home() {
     }
   };
 
-  const handleSelectDuplicate = (duplicate) => {
-    setNewHelp({
-      _id: duplicate._id,
-      nombre: duplicate.nombre,
-      descripcion: duplicate.descripcion || "",
-      localidad: duplicate.localidad || "",
-      location: duplicate.location || { type: "Point", coordinates: [] },
-    });
-    setDuplicados([]);
+  const handleSelectDuplicate = (dup) => {
+    setNewHelp(dup);
     setIsDuplicate(true);
+
+    setInitialValues({
+      localidad: dup.localidad,
+      descripcion: dup.descripcion,
+    });
   };
 
   const handleOutsideClick = (e) => {
@@ -299,18 +302,24 @@ export default function Home() {
           ))}
         </Grid>
       </StickySection>
-
       {isModalOpen && (
         <ModalBackground id="modalBackground" onClick={handleOutsideClick}>
           <ModalContent>
             <h3>Solicitar Ayuda</h3>
-            <Input
-              type="text"
-              name="nombre"
-              placeholder="Nombre de la ayuda"
-              value={newHelp.nombre || ""}
-              onChange={handleInputChange}
-            />
+
+            <InputWrapper>
+              <Input
+                type="text"
+                name="nombre"
+                placeholder="Nombre de la ayuda"
+                value={newHelp.nombre || ""}
+                onChange={handleInputChange}
+              />
+              <CharacterCount isExceeded={newHelp.nombre.length > 50}>
+                {newHelp.nombre.length}/50
+              </CharacterCount>
+            </InputWrapper>
+
             {duplicados.length > 0 && (
               <DuplicateList>
                 {duplicados.map((dup) => (
@@ -323,13 +332,20 @@ export default function Home() {
                 ))}
               </DuplicateList>
             )}
-            <Input
-              type="text"
-              name="descripcion"
-              placeholder="Descripción"
-              value={newHelp.descripcion || ""}
-              onChange={handleInputChange}
-            />
+
+            <InputWrapper>
+              <Input
+                type="text"
+                name="descripcion"
+                placeholder="Descripción"
+                value={newHelp.descripcion || ""}
+                onChange={handleInputChange}
+              />
+              <CharacterCount isExceeded={newHelp.descripcion.length > 100}>
+                {newHelp.descripcion.length}/100
+              </CharacterCount>
+            </InputWrapper>
+
             <Input
               type="text"
               name="localidad"
@@ -338,6 +354,7 @@ export default function Home() {
               onChange={handleInputChange}
             />
             <p>Coordenadas: {newHelp.coordenadas || "Cargando ubicación..."}</p>
+
             <SubmitButton
               isDuplicate={isDuplicate}
               onClick={
@@ -522,4 +539,22 @@ const DuplicateItem = styled.div`
   &:hover {
     background-color: #e0e0e0;
   }
+`;
+
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const CharacterCount = styled.span`
+  position: absolute;
+  background-color: #fff;
+  border: 0.5px solid #bbb;
+  border-radius: 10px;
+  padding: 2px 4px;
+  right: 10px;
+  bottom: 20px;
+  font-size: 0.8em;
+  color: ${({ isExceeded }) => (isExceeded ? "red" : "gray")};
+  pointer-events: none; // Evita que interfiera con el input
 `;
