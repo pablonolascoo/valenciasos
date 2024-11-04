@@ -296,7 +296,23 @@ export default function Home() {
           {recientes.map((ayuda) => (
             <AyudaCard key={ayuda._id}>
               <HelpTitle>{ayuda.nombre}</HelpTitle>
-              <HelpLocation>{ayuda.localidad}</HelpLocation>
+              <LocationWrapper>
+                <Image
+                  src={"/marcador.svg"}
+                  alt="Icon"
+                  width={12}
+                  height={12}
+                />
+                <HelpLocation>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ayuda.localidad)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {ayuda.localidad}
+                  </a>
+                </HelpLocation>
+              </LocationWrapper>
               <p>{ayuda.descripcion}</p>
               <Stats>
                 <span>Solicitudes: {ayuda.totalSolicitudes}</span>
@@ -362,7 +378,23 @@ export default function Home() {
           {populares.map((ayuda) => (
             <AyudaCard key={ayuda._id}>
               <HelpTitle>{ayuda.nombre}</HelpTitle>
-              <HelpLocation>{ayuda.localidad}</HelpLocation>
+              <LocationWrapper>
+                <Image
+                  src={"/marcador.svg"}
+                  alt="Icon"
+                  width={12}
+                  height={12}
+                />
+                <HelpLocation>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ayuda.localidad)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {ayuda.localidad}
+                  </a>
+                </HelpLocation>
+              </LocationWrapper>
               <p>{ayuda.descripcion}</p>
               <Stats>
                 <span>Solicitudes: {ayuda.totalSolicitudes}</span>
@@ -596,6 +628,14 @@ const Message = styled.p`
   color: #28a745;
   margin-top: 10px;
   font-size: 14px;
+`;
+
+const LocationWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  width: 100%;
 `;
 
 const ButtonWrapper = styled.div`
