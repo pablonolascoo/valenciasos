@@ -281,7 +281,7 @@ export default function Home() {
     <Container>
       <StickySection>
         <SectionHeader>
-          <Title>Más recientes</Title>
+          <Title variant="recientes">Más recientes</Title>
           <PaginationControls>
             <PaginationButton onClick={handlePreviousPageRecientes}>
               Anterior
@@ -364,7 +364,7 @@ export default function Home() {
 
       <StickySection>
         <SectionHeader>
-          <Title>Más solicitado</Title>
+          <Title variant="solicitado">Más solicitado</Title>
           <PaginationControls>
             <PaginationButton onClick={handlePreviousPagePopulares}>
               Anterior
@@ -373,6 +373,7 @@ export default function Home() {
               Siguiente
             </PaginationButton>
           </PaginationControls>
+          <Button onClick={() => setIsModalOpen(true)}>Solicitar Ayuda</Button>
         </SectionHeader>
         <Grid>
           {populares.map((ayuda) => (
@@ -533,7 +534,7 @@ export default function Home() {
 }
 
 const Container = styled.div`
-  padding: 10px;
+  padding: 0px;
   font-family: "Nunito Sans", "Montserrat", sans-serif;
 `;
 
@@ -549,14 +550,20 @@ const SectionHeader = styled.div`
   position: sticky;
   top: 0;
   gap: 10px;
-  background-color: #fff;
-  padding: 10px 0;
+  border-radius: 0px 0px 10px 10px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 10px;
   z-index: 1;
+  
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
-const Title = styled.div`
-  font-size: 18px;
+const Title = styled.h2`
+  font-size: 20px;
   font-weight: bold;
+  color: ${({ variant }) => (variant === "recientes" ? "#1E90FF" : "#FF4500")};
 `;
 
 const PaginationControls = styled.div`
@@ -596,6 +603,7 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 10px;
+  padding: 10px;
 `;
 
 const AyudaCard = styled.div`
