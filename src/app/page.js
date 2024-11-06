@@ -492,7 +492,7 @@ export default function Home() {
               <Input
                 type="text"
                 name="localidad"
-                placeholder="Localidad"
+                placeholder="Localidad (pueblo, ciudad o pedanía)"
                 value={newHelp.localidad || ""}
                 onChange={handleInputChange}
               />
