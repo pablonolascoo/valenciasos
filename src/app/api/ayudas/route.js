@@ -90,13 +90,40 @@ export async function GET(req) {
       const allAyudas = await Ayuda.find();
       ayudas = allAyudas
         .map((ayuda) => {
-          const porcentajeAsistencia =
-            ayuda.totalSolicitudes === 0
-              ? 0
-              : ayuda.totalAsistencias / ayuda.totalSolicitudes;
-          return { ...ayuda._doc, porcentajeAsistencia };
+          const totalSolicitudes = ayuda.totalSolicitudes || 0;
+          const totalAsistencias = ayuda.totalAsistencias || 0;
+          const diferencia = totalSolicitudes - totalAsistencias;
+          const esMasNecesitado = totalAsistencias === 0;
+          return {
+            ...ayuda._doc,
+            totalSolicitudes,
+            totalAsistencias,
+            diferencia,
+            esMasNecesitado,
+          };
         })
-        .sort((a, b) => a.porcentajeAsistencia - b.porcentajeAsistencia)
+        .sort((a, b) => {
+          // Priorizar aquellos con totalAsistencias === 0
+          if (a.esMasNecesitado && !b.esMasNecesitado) {
+            return -1;
+          } else if (!a.esMasNecesitado && b.esMasNecesitado) {
+            return 1;
+          } else if (a.esMasNecesitado && b.esMasNecesitado) {
+            // Ambos tienen totalAsistencias === 0
+            // Priorizar por mayor totalSolicitudes
+            return b.totalSolicitudes - a.totalSolicitudes;
+          } else {
+            // Ambos tienen totalAsistencias > 0
+            // Priorizar por mayor diferencia entre totalSolicitudes y totalAsistencias
+            const diferenciaComparacion = b.diferencia - a.diferencia;
+            if (diferenciaComparacion !== 0) {
+              return diferenciaComparacion;
+            } else {
+              // Si la diferencia es igual, priorizar por mayor totalSolicitudes
+              return b.totalSolicitudes - a.totalSolicitudes;
+            }
+          }
+        })
         .slice(skip, skip + limit);
     }
 

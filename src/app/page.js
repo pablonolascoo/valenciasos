@@ -694,6 +694,8 @@ const ModalContent = styled.div`
   border-radius: 8px;
   width: 80%;
   max-width: 400px;
+  max-height: 90vh;
+  overflow-y: scroll;
   text-align: center;
 `;
 
