@@ -1,4 +1,4 @@
-// ruta: src/constants/sizes.js
+// ruta: constants/Sizes.js
 
 const Sizes = {
     // Espaciados (gaps, márgenes, paddings)

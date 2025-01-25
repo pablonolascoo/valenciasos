@@ -6,7 +6,8 @@ import axios from "axios";
 import styled from "styled-components";
 import Image from "next/image";
 
-import Sizes from '@/constants/Sizes';
+import Sizes from '@/constants/Sizes.js';
+import Colors from '@/constants/Colors.js';
 
 export default function Home() {
   const [recientes, setRecientes] = useState([]);
@@ -558,7 +559,7 @@ const SectionHeader = styled.div`
   -webkit-backdrop-filter: blur(10px);
   padding: ${Sizes.spacing.sm};
   z-index: 1;
-  box-shadow: ${Sizes.shadows.light};
+  box-shadow: ${Colors.light.shadows.light};
 `;
 
 const Title = styled.h2`
@@ -606,8 +607,6 @@ const Grid = styled.div`
   gap: ${Sizes.spacing.sm};
   padding: ${Sizes.spacing.sm};
 `;
-
-import Sizes from '../constants/Sizes';
 
 const AyudaCard = styled.div`
   padding: ${Sizes.spacing.sm};
