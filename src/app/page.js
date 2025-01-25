@@ -6,6 +6,8 @@ import axios from "axios";
 import styled from "styled-components";
 import Image from "next/image";
 
+import Sizes from '@/constants/Sizes';
+
 export default function Home() {
   const [recientes, setRecientes] = useState([]);
   const [populares, setPopulares] = useState([]);
@@ -534,13 +536,13 @@ export default function Home() {
 }
 
 const Container = styled.div`
-  padding: 0px;
+  padding: ${Sizes.spacing.md};
   font-family: "Nunito Sans", "Montserrat", sans-serif;
 `;
 
 const StickySection = styled.div`
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: ${Sizes.spacing.lg};
 `;
 
 const SectionHeader = styled.div`
@@ -549,43 +551,42 @@ const SectionHeader = styled.div`
   align-items: center;
   position: sticky;
   top: 0;
-  gap: 10px;
-  border-radius: 0px 0px 10px 10px;
+  gap: ${Sizes.spacing.sm};
+  border-radius: 0px 0px ${Sizes.borderRad.md} ${Sizes.borderRad.md};
   background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 10px;
+  padding: ${Sizes.spacing.sm};
   z-index: 1;
-  
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: ${Sizes.shadows.light};
 `;
 
 const Title = styled.h2`
-  font-size: 20px;
+  font-size: ${Sizes.fontSizes.lg};
   font-weight: bold;
   color: ${({ variant }) => (variant === "recientes" ? "#1E90FF" : "#FF4500")};
 `;
 
 const PaginationControls = styled.div`
   display: flex;
-  gap: 10px;
+  gap: ${Sizes.spacing.sm};
 `;
 
 const PaginationButton = styled.button`
-  padding: 5px 10px;
+  padding: ${Sizes.spacing.xs} ${Sizes.spacing.sm};
 `;
 
 const Button = styled.button`
-  padding: 5px 10px;
+  padding: ${Sizes.spacing.xs} ${Sizes.spacing.sm};
 `;
 
 const SubmitButton = styled.button`
-  font-size: 1rem;
-  padding: 12px;
+  font-size: ${Sizes.fontSizes.md};
+  padding: ${Sizes.spacing.md};
   border: none;
-  border-radius: 6px;
+  border-radius: ${Sizes.borderRad.md};
   width: 100%;
-  margin: 8px 0;
+  margin: ${Sizes.spacing.sm} 0;
   box-sizing: border-box;
   background-color: ${({ isDuplicate }) =>
     isDuplicate ? "#4caf50" : "#2196f3"};
@@ -602,62 +603,64 @@ const SubmitButton = styled.button`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 10px;
-  padding: 10px;
+  gap: ${Sizes.spacing.sm};
+  padding: ${Sizes.spacing.sm};
 `;
 
+import Sizes from '../constants/Sizes';
+
 const AyudaCard = styled.div`
-  padding: 10px;
+  padding: ${Sizes.spacing.sm};
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border-radius: ${Sizes.borderRad.md};
   position: relative;
 `;
 
 const HelpTitle = styled.h3`
-  font-size: 1.2rem;
+  font-size: ${Sizes.fontSizes.lg};
   margin: 0;
   padding: 0;
 `;
 
 const HelpLocation = styled.p`
-  font-size: 0.9rem;
+  font-size: ${Sizes.fontSizes.sm};
   color: #666;
-  margin: 4px 0;
+  margin: ${Sizes.spacing.xs} 0;
 `;
 
 const Stats = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: ${Sizes.fontSizes.sm};
   color: #555;
 `;
 
 const Message = styled.p`
   color: #28a745;
-  margin-top: 10px;
-  font-size: 14px;
+  margin-top: ${Sizes.spacing.sm};
+  font-size: ${Sizes.fontSizes.sm};
 `;
 
 const LocationWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
+  gap: ${Sizes.spacing.xs};
   width: 100%;
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
-  gap: 10px;
+  gap: ${Sizes.spacing.sm};
   width: 100%;
 `;
 
 const ActionButton = styled.button`
   width: 100%;
   background-color: ${({ active }) => (active ? "#98dbe3" : "#f0f0f0")};
-  border-radius: 8px;
-  margin-top: 12px;
-  padding: 8px;
+  border-radius: ${Sizes.borderRad.md};
+  margin-top: ${Sizes.spacing.md};
+  padding: ${Sizes.spacing.sm};
   border: none;
   display: flex;
   justify-content: center;
@@ -667,8 +670,8 @@ const ActionButton = styled.button`
 `;
 
 const ButtonText = styled.span`
-  margin-left: 8px;
-  font-size: 0.9rem;
+  margin-left: ${Sizes.spacing.xs};
+  font-size: ${Sizes.fontSizes.sm};
   color: #333;
 `;
 
@@ -688,10 +691,10 @@ const ModalBackground = styled.div`
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: ${Sizes.spacing.sm};
   background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
+  padding: ${Sizes.spacing.lg};
+  border-radius: ${Sizes.borderRad.md};
   width: 80%;
   max-width: 400px;
   max-height: 90vh;
@@ -700,24 +703,24 @@ const ModalContent = styled.div`
 `;
 
 const Input = styled.input`
-  font-size: 1rem;
-  padding: 12px;
+  font-size: ${Sizes.fontSizes.md};
+  padding: ${Sizes.spacing.md};
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: ${Sizes.borderRad.md};
   width: 100%;
-  margin: 8px 0;
+  margin: ${Sizes.spacing.sm} 0;
   box-sizing: border-box;
 `;
 
 const DuplicateList = styled.div`
-  margin-top: 10px;
+  margin-top: ${Sizes.spacing.sm};
   background: #f8f8f8;
-  border-radius: 4px;
-  padding: 10px;
+  border-radius: ${Sizes.borderRad.sm};
+  padding: ${Sizes.spacing.sm};
 `;
 
 const DuplicateItem = styled.div`
-  padding: 5px;
+  padding: ${Sizes.spacing.xs};
   cursor: pointer;
   &:hover {
     background-color: #e0e0e0;
@@ -733,11 +736,11 @@ const CharacterCount = styled.span`
   position: absolute;
   background-color: #fff;
   border: 0.5px solid #bbb;
-  border-radius: 10px;
+  border-radius: ${Sizes.borderRad.sm};
   padding: 2px 4px;
-  right: 10px;
-  bottom: 20px;
+  right: ${Sizes.spacing.sm};
+  bottom: ${Sizes.spacing.lg};
   font-size: 0.8em;
   color: ${({ isExceeded }) => (isExceeded ? "red" : "gray")};
-  pointer-events: none; // Evita que interfiera con el input
+  pointer-events: none;
 `;
